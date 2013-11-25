@@ -3,6 +3,13 @@
 * Update check::load to become a class.
 * Add new check::load default values for over 16 CPUs.
 
+2013-11-25 - 0.5.0 (Pablo Fernandez)
+* Implemented remote checks (to be created from other modules) in check.pp
+* Added support for Scientific Linux 6
+* Added parameter for apache allowed hosts
+* Made apache_httpd module dependency optional inside one IF
+* Added support for puppetlabs-apache dependency (with SSL)
+
 2013-07-18 - 0.4.0
 * Include mysql_health checks, implemented in a more modern way
 

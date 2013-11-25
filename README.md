@@ -18,11 +18,15 @@ have my head hurt each time I have to make modificiations to it...
 
 * Stored configurations enabled on the puppetmaster (mandatory)
 * `apache_httpd` and `php` modules used for the nagios server node (optional)
+* OR `puppetlabs_apache` module for nagios server (optional)
 
 The `apache_httpd` and `php` modules are required for the server part, though
 optionally since it's also possible to use an existing non-puppet managed web
 server or different module modules. For a new empty node, configuring it as a
 nagios server will be much quicker if those modules can be used.
+
+The `puppetlabs_apache` module can optionally be included, and will configure
+the whole server (with php and ssl). 
 
 Stored configurations are essential on the puppetmaster for the module to work
 at all, since it relies on having all nodes create their own exported nagios
@@ -104,6 +108,14 @@ To enable nagiosgraph for the client's services in the server web interface :
     class { 'nagios::client':
       service_use => 'generic-service,nagiosgraph-service',
     }
+
+To create a new check from a separate module, you can create an executable script
+and define a new nagios check:
+
+    nagios::check {'dummy':
+        executable   => '/usr/bin/check_dummy.sh',
+    }
+
 
 ## Hints
 
