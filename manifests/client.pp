@@ -52,7 +52,7 @@ class nagios::client (
     # Base package(s)
     package { $nagios::client::params::nrpe_package:
         ensure => installed,
-        alias  => $nagios::params::nrpe_package_alias,
+        alias  => $nagios::client::params::nrpe_package_alias,
     }
 
     # Most plugins use nrpe, so we install it everywhere
@@ -60,7 +60,7 @@ class nagios::client (
         ensure    => running,
         enable    => true,
         hasstatus => true,
-        subscribe => File[$nagios::params::nrpe_cfg_file],
+        subscribe => File[$nagios::client::params::nrpe_cfg_file],
     }
     file { $nagios::client::params::nrpe_cfg_file:
         owner   => 'root',
