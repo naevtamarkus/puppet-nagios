@@ -18,7 +18,7 @@ define nagios::check::moxi (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_moxi":
+    file { "${nagios::client::params::plugin_dir}/check_moxi":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

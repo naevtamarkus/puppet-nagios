@@ -25,7 +25,7 @@ define nagios::check::megaraid_sas (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_megaraid_sas":
+    file { "${nagios::client::params::plugin_dir}/check_megaraid_sas":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

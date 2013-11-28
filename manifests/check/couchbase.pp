@@ -22,7 +22,7 @@ define nagios::check::couchbase (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_couchbase":
+    file { "${nagios::client::params::plugin_dir}/check_couchbase":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
