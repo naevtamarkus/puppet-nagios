@@ -47,7 +47,7 @@ define nagios::check (
 
 
     # Enable NRPE to execute it
-    file { "${nagios::params::nrpe_cfg_dir}/nrpe-check-${title}.cfg":
+    file { "${nagios::client::params::nrpe_cfg_dir}/nrpe-check-${title}.cfg":
         owner   => 'root',
         group   => $nagios::client::nrpe_group,
         mode    => '0640',
