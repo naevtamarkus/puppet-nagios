@@ -1,5 +1,6 @@
 class nagios::server (
     # For the tag of the stored configuration to realize
+    $ensure               = present,
     $nagios_server        = 'default',
     $puppetlabs_apache    = false,
     $apache_httpd         = true,
@@ -132,7 +133,7 @@ class nagios::server (
         }
     }
 
-    # Other packages
+    # Other packages TODO This needs to be converted into a dependency
     package { [
         'mailx', # For the default email notifications to work
     ]:
@@ -140,13 +141,13 @@ class nagios::server (
     }
 
     service { 'nagios':
-        ensure    => running,
-        enable    => true,
+        ensure    => $ensure? {present => running, default => stopped},
+        enable    => $ensure? {present => true, default => false},
         # "service nagios status" returns 0 when "nagios is not running" :-(
         hasstatus => false,
         # Don't get fooled by any process with "nagios" in its command line
         pattern   => '/usr/sbin/nagios',
-        # Work around files created root:root mode 600 (known issue)
+        # Work around files created root:root mode 600 (known issue) FIXME
         restart   => '/bin/chgrp nagios /etc/nagios/nagios_*.cfg && /bin/chmod 640 /etc/nagios/nagios_*.cfg && /sbin/service nagios reload',
         require   => Package['nagios'],
     }
@@ -328,11 +329,11 @@ class nagios::server (
         '/etc/nagios/nagios_servicegroup.cfg',
         '/etc/nagios/nagios_timeperiod.cfg',
     ]:
-        owner => 'root',
-        group => 'nagios',
-        mode  => '0640',
-	ensure => present,
-	before => Service[nagios],
+        owner  => 'root',
+        group  => 'nagios',
+        mode   => '0640',
+	      ensure => present,
+	      before => Service[nagios],
     }
 
     # Nagios commands
