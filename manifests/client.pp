@@ -37,7 +37,7 @@ class nagios::client (
     # other
     $plugin_dir                  = $nagios::params::plugin_dir,
     $selinux                     = true
-) inherits nagios::params {
+) inherits nagios::client::params {
 
     # Set the variables to be used, including scoped from elsewhere, based on the optional
     # fact or parameter from here
