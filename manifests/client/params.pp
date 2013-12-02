@@ -15,9 +15,6 @@ class nagios::client::params {
         'amd64'  => 'lib64',
          default => 'lib',
     }
-    # The easy bunch
-    $nagios_service = 'nagios'
-    $nagios_user    = 'nagios'
     # nrpe
     $nrpe_service   = 'nrpe'
     $nrpe_cfg_file  = '/etc/nagios/nrpe.cfg'
