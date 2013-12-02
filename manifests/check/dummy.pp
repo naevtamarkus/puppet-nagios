@@ -18,7 +18,7 @@ class nagios::check::dummy (
         content => "#!/bin/bash\necho OK \nexit 0\n",
     }
 
-    nagios::check {'dummy':
+    nagios::client::check {'dummy':
         executable   => '/tmp/check_dummy.sh',
     }
         
