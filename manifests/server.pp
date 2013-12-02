@@ -67,7 +67,7 @@ class nagios::server (
     $admin_pager = 'pagenagios@localhost',
     # private/resource.cfg for $USERx$ macros (from 1 to 32)
     $user = {
-        '1' => $nagios::params::plugin_dir,
+        '1' => $nagios::server::params::plugin_dir,
     },
     # Options for all nrpe-based checks
     $nrpe_options   = '-t 15',
@@ -77,11 +77,11 @@ class nagios::server (
     $notify_host_by_email_command_line    = '/usr/bin/printf "%b" "***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n" | /bin/mail -s "** $NOTIFICATIONTYPE$ Host Alert: $HOSTNAME$ is $HOSTSTATE$ **" $CONTACTEMAIL$',
     $notify_service_by_email_command_line = '/usr/bin/printf "%b" "***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$" | /bin/mail -s "** $NOTIFICATIONTYPE$ Service Alert: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **" $CONTACTEMAIL$',
     $timeperiod_workhours = '09:00-17:00',
-    $plugin_dir           = $nagios::params::plugin_dir,
+    $plugin_dir           = $nagios::server::params::plugin_dir,
     $plugin_nginx         = false,
     $plugin_xcache        = false,
     $selinux              = true
-) inherits nagios::params {
+) inherits nagios::server::params {
 
     # Full nrpe command to run, with default options
     $nrpe = "\$USER1\$/check_nrpe -H \$HOSTADDRESS\$ ${nrpe_options}"
@@ -198,14 +198,14 @@ class nagios::server (
         apache::vhost { 'nagios':
             port           => 443,
             ssl            => true,
-            docroot        => $nagios::params::html_dir,
+            docroot        => $nagios::server::params::html_dir,
             # Avoided scriptaliases because they will go AFTER the aliases and therefore not work
             aliases        => [
-                { alias => '/nagios/cgi-bin/', path => $nagios::params::cgi_dir }, 
-                { alias => '/nagios/', path => $nagios::params::html_dir }
+                { alias => '/nagios/cgi-bin/', path => $nagios::server::params::cgi_dir }, 
+                { alias => '/nagios/', path => $nagios::server::params::html_dir }
             ],
             directories    => [
-                { path             => $nagios::params::cgi_dir,
+                { path             => $nagios::server::params::cgi_dir,
                   'addhandlers'    => [{ handler => 'cgi-script', extensions => ['.cgi']}],
                   'options'        => 'ExecCGI',
                   'order'          => 'Deny,Allow',
@@ -216,7 +216,7 @@ class nagios::server (
                   'auth_name'      => 'Nagios',
                   'auth_require'   => 'valid-user',
                 } , {
-                  path             => $nagios::params::html_dir,
+                  path             => $nagios::server::params::html_dir,
                   'options'        => 'FollowSymlinks',
                   'order'          => 'Deny,Allow',
                   'deny'           => 'from all',
