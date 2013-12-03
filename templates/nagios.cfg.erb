@@ -27,7 +27,7 @@ log_file=/var/log/nagios/nagios.log
 # if you wish (as shown below), or keep them all in a single config file.
 
 # You can specify individual object config files as shown below:
-<% @cfg_file.each do |file| -%>
+<% scope.lookupvar("nagios::server::params::cfg_file").each do |file| -%>
 cfg_file=<%= file %>
 <% end -%>
 #cfg_file=/etc/nagios/objects/commands.cfg

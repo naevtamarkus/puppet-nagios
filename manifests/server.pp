@@ -34,23 +34,6 @@ class nagios::server (
     $cgi_authorized_for_all_host_commands         = 'nagiosadmin',
     $cgi_default_statusmap_layout                 = '5',
     # nagios.cfg
-    $cfg_file = [
-        # Original files - only reuse the templates as-is
-#        '/etc/nagios/objects/commands.cfg',
-#        '/etc/nagios/objects/contacts.cfg',
-#        '/etc/nagios/objects/timeperiods.cfg',
-        '/etc/nagios/objects/templates.cfg',
-        # Where puppet managed types are
-        '/etc/nagios/nagios_command.cfg',
-        '/etc/nagios/nagios_contact.cfg',
-        '/etc/nagios/nagios_contactgroup.cfg',
-        '/etc/nagios/nagios_host.cfg',
-#        '/etc/nagios/nagios_hostdependency.cfg',
-        '/etc/nagios/nagios_hostgroup.cfg',
-        '/etc/nagios/nagios_service.cfg',
-        '/etc/nagios/nagios_servicegroup.cfg',
-        '/etc/nagios/nagios_timeperiod.cfg',
-    ],
     $cfg_dir                        = [],
     $process_performance_data       = '0',
     $host_perfdata_command          = false,
@@ -232,17 +215,7 @@ class nagios::server (
     }
 
     # Work around a puppet bug where created files are 600 root:root
-    file { [
-        '/etc/nagios/nagios_command.cfg',
-        '/etc/nagios/nagios_contact.cfg',
-        '/etc/nagios/nagios_contactgroup.cfg',
-        '/etc/nagios/nagios_host.cfg',
-        '/etc/nagios/nagios_hostdependency.cfg',
-        '/etc/nagios/nagios_hostgroup.cfg',
-        '/etc/nagios/nagios_service.cfg',
-        '/etc/nagios/nagios_servicegroup.cfg',
-        '/etc/nagios/nagios_timeperiod.cfg',
-    ]:
+    file { $nagios::server::params::cfg_file :
         owner  => 'root',
         group  => 'nagios',
         mode   => '0640',

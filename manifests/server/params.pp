@@ -46,5 +46,24 @@ class nagios::server::params {
         'nagios-plugins-udp',
     ]
     
+        # nagios.cfg
+    $cfg_file = [
+        # Original files - only reuse the templates as-is
+#        '/etc/nagios/objects/commands.cfg',
+#        '/etc/nagios/objects/contacts.cfg',
+#        '/etc/nagios/objects/timeperiods.cfg',
+        '/etc/nagios/objects/templates.cfg',   #TODO why is this file NOT managed by the module?
+        # Where puppet managed types are
+        '/etc/nagios/nagios_command.cfg',
+        '/etc/nagios/nagios_contact.cfg',
+        '/etc/nagios/nagios_contactgroup.cfg',
+        '/etc/nagios/nagios_host.cfg',
+        '/etc/nagios/nagios_hostdependency.cfg',
+        '/etc/nagios/nagios_hostgroup.cfg',
+        '/etc/nagios/nagios_service.cfg',
+        '/etc/nagios/nagios_servicegroup.cfg',
+        '/etc/nagios/nagios_timeperiod.cfg',
+    ]
+    
 }
 
