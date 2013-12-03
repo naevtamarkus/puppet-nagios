@@ -1,4 +1,4 @@
-class nagios::server::apache () {
+class nagios::server::external_apache () {
     # Configure apache with apache_httpd module only if requested
     if $nagios::server::apache_httpd {
         require apache_httpd::install

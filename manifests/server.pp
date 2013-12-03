@@ -124,7 +124,7 @@ class nagios::server (
 
     # Configure apache with apache_httpd module only if requested
     if $apache_httpd or $puppetlabs_apache {
-        include nagios::server::apache
+        include nagios::server::external_apache
     }
 
 
