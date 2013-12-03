@@ -161,10 +161,6 @@ class nagios::server (
         notify  => Service['nagios'],
         require => Package['nagios'],
     }
-    Nagios_hostgroup <<| tag == "nagios-${nagios_server}" |>> {
-        notify  => Service['nagios'],
-        require => Package['nagios'],
-    }
     Nagios_hostdependency <<| tag == "nagios-${nagios_server}" |>> {
         notify  => Service['nagios'],
         require => Package['nagios'],
@@ -177,7 +173,6 @@ class nagios::server (
         notify  => Service['nagios'],
         require => Package['nagios'],
     }
-    
 
     # Auto reload and parent dir, but for non-exported resources
     # FIXME: This does not work from outside here, wrong scope.
