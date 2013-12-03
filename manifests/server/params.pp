@@ -29,5 +29,22 @@ class nagios::server::params {
     # This probably needs specialization per OS (needs the final /)
     $cgi_dir  = "/usr/${libdir}/nagios/cgi-bin/"
     $html_dir = "/usr/share/nagios/html/"
+    
+    $server_packages = [
+        'nagios',
+        'nagios-plugins-dhcp',
+        'nagios-plugins-dns',
+        'nagios-plugins-http',
+        'nagios-plugins-icmp',
+        'nagios-plugins-ldap',
+        'nagios-plugins-nrpe',
+        'nagios-plugins-ping',
+        'nagios-plugins-smtp',
+        'nagios-plugins-snmp',
+        'nagios-plugins-ssh',
+        'nagios-plugins-tcp',
+        'nagios-plugins-udp',
+    ]
+    
 }
 
