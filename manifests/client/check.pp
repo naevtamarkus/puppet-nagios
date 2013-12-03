@@ -16,7 +16,8 @@ define nagios::client::check (
     $use                 = hiera ('nagios::client::check::${title}::use', undef),
 ) {
 
-    # We need to take default values from the nagios::client config
+    # We need to take default values from the nagios::client config 
+    # TODO need to do this better, in order to allow parameters in classes without Hiera
     include nagios::client
 
     # Some constants that don't deserve to be parameters
