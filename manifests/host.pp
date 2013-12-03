@@ -56,7 +56,7 @@ define nagios::host (
         tag                 => regsubst($server,'^(.+)$','nagios-\1'),
     }
 
-    # Announce also the hostgroups it belongs to (with no description)
+    # Create also the hostgroups (with no description)
     $hg_array = split ($hostgroups, ',')
     @@nagios_hostgroup {$hg_array:
         alias => '',

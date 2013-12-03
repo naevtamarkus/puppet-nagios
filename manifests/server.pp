@@ -173,10 +173,6 @@ class nagios::server (
         notify  => Service['nagios'],
         require => Package['nagios'],
     }
-    Nagios_servicegroup <<| tag == "nagios-${nagios_server}" |>> {
-        notify  => Service['nagios'],
-        require => Package['nagios'],
-    }
     Nagios_command <<| tag == "nagios-${nagios_server}" |>> {
         notify  => Service['nagios'],
         require => Package['nagios'],
@@ -187,6 +183,10 @@ class nagios::server (
     # FIXME: This does not work from outside here, wrong scope.
     # We'll need to wrap around these types with our own
     # definitions like for "host"
+    Nagios_command {
+        notify  => Service['nagios'],
+        require => Package['nagios'],
+    }
     Nagios_contact {
         notify  => Service['nagios'],
         require => Package['nagios'],
@@ -196,6 +196,10 @@ class nagios::server (
         require => Package['nagios'],
     }
     Nagios_timeperiod {
+        notify  => Service['nagios'],
+        require => Package['nagios'],
+    }
+    Nagios_hostgroup {
         notify  => Service['nagios'],
         require => Package['nagios'],
     }
@@ -436,10 +440,10 @@ class nagios::server (
     }
 
     # Create all nagios hostgroups specified
-#    create_resources (nagios_hostgroup, $hostgroups) 
+    create_resources (nagios_hostgroup, $hostgroups) 
 
     # Nagios service groups
-#    create_resources (nagios_servicegroup, $servicegroups)
+    create_resources (nagios_servicegroup, $servicegroups)
 
     # With selinux, adjustements are needed for nagiosgraph
     if $selinux and $::selinux_enforced {
