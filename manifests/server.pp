@@ -435,12 +435,11 @@ class nagios::server (
         alias => 'No Time Is A Good Time',
     }
 
-    # Create all nagios hostgroups and servicegroups specified in parameters
-    $default_tag = {
-        tag => regsubst($nagios_server,'^(.+)$','nagios-\1')
-    }
-    #create_resources ("@@nagios_hostgroup", $hostgroups, $default_tag)
-    #create_resources ("@@nagios_servicegroup", $servicegroups, $default_tag)
+    # Create all nagios hostgroups specified
+#    create_resources (nagios_hostgroup, $hostgroups) 
+
+    # Nagios service groups
+#    create_resources (nagios_servicegroup, $servicegroups)
 
     # With selinux, adjustements are needed for nagiosgraph
     if $selinux and $::selinux_enforced {
