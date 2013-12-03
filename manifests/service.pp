@@ -51,5 +51,12 @@ define nagios::service (
         ensure              => $ensure,
     }
 
+    # Announce also the servicegroups it belongs to (with no description)
+    $sg_array = split ($servicegroups, ',')
+    @@nagios_servicegroup {$sg_array:
+        alias => '',
+        tag   => regsubst($server,'^(.+)$','nagios-\1'),
+    }
+
 }
 
