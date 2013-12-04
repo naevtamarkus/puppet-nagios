@@ -32,7 +32,7 @@
 
 use strict;
 use Getopt::Std;
-use lib qw(<%= scope.lookupvar('nagios::client::plugin_dir') %>); # possible pathes to your Nagios plugins and utils.pm
+use lib qw(<%= scope.lookupvar('nagios::client::params::plugin_dir') %>); # possible pathes to your Nagios plugins and utils.pm
 use utils qw(%ERRORS);
 
 our($opt_h, $opt_s, $opt_o, $opt_m, $opt_p);

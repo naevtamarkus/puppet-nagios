@@ -2,21 +2,22 @@
 # It allows parameters (direct, hiera and $nagios::client defaults, in this order)
 # Check manifests/checks/dummy.pp for an example on how to use it
 
-define nagios::check (
+define nagios::client::check (
     $executable,
-#    $parameters          = hiera ('nagios::check::${title}::parameters', undef),
-    $description         = hiera ('nagios::check::${title}::description', $title),
-    $nrpe_options        = hiera ('nagios::check::${title}::nrpe_options', '-t 15'),
-    $ensure              = hiera ('nagios::check::${title}::ensure', present),
-#    $servicegroups       = hiera ('nagios::check::${title}::description', []),
-    $check_period        = hiera ('nagios::check::${title}::check_period', undef),
-    $contact_groups      = hiera ('nagios::check::${title}::contact_groups', undef),
-    $max_check_attempts  = hiera ('nagios::check::${title}::max_check_attempts', undef),
-    $notification_period = hiera ('nagios::check::${title}::notification_period', undef),
-    $use                 = hiera ('nagios::check::${title}::use', undef),
+#    $parameters          = hiera ('nagios::client::check::${title}::parameters', undef),
+    $description         = hiera ('nagios::client::check::${title}::description', $title),
+    $nrpe_options        = hiera ('nagios::client::check::${title}::nrpe_options', '-t 15'),
+    $ensure              = hiera ('nagios::client::check::${title}::ensure', present),
+#    $servicegroups       = hiera ('nagios::client::check::${title}::description', []),
+    $check_period        = hiera ('nagios::client::check::${title}::check_period', undef),
+    $contact_groups      = hiera ('nagios::client::check::${title}::contact_groups', undef),
+    $max_check_attempts  = hiera ('nagios::client::check::${title}::max_check_attempts', undef),
+    $notification_period = hiera ('nagios::client::check::${title}::notification_period', undef),
+    $use                 = hiera ('nagios::client::check::${title}::use', undef),
 ) {
 
-    # We need to take default values from the nagios::client config
+    # We need to take default values from the nagios::client config 
+    # TODO need to do this better, in order to allow parameters in classes without Hiera
     include nagios::client
 
     # Some constants that don't deserve to be parameters
@@ -47,7 +48,7 @@ define nagios::check (
 
 
     # Enable NRPE to execute it
-    file { "${nagios::params::nrpe_cfg_dir}/nrpe-check-${title}.cfg":
+    file { "${nagios::client::params::nrpe_cfg_dir}/nrpe-check-${title}.cfg":
         owner   => 'root',
         group   => $nagios::client::nrpe_group,
         mode    => '0640',

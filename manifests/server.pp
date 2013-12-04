@@ -34,23 +34,6 @@ class nagios::server (
     $cgi_authorized_for_all_host_commands         = 'nagiosadmin',
     $cgi_default_statusmap_layout                 = '5',
     # nagios.cfg
-    $cfg_file = [
-        # Original files - only reuse the templates as-is
-#        '/etc/nagios/objects/commands.cfg',
-#        '/etc/nagios/objects/contacts.cfg',
-#        '/etc/nagios/objects/timeperiods.cfg',
-        '/etc/nagios/objects/templates.cfg',
-        # Where puppet managed types are
-        '/etc/nagios/nagios_command.cfg',
-        '/etc/nagios/nagios_contact.cfg',
-        '/etc/nagios/nagios_contactgroup.cfg',
-        '/etc/nagios/nagios_host.cfg',
-#        '/etc/nagios/nagios_hostdependency.cfg',
-        '/etc/nagios/nagios_hostgroup.cfg',
-        '/etc/nagios/nagios_service.cfg',
-        '/etc/nagios/nagios_servicegroup.cfg',
-        '/etc/nagios/nagios_timeperiod.cfg',
-    ],
     $cfg_dir                        = [],
     $process_performance_data       = '0',
     $host_perfdata_command          = false,
@@ -67,7 +50,7 @@ class nagios::server (
     $admin_pager = 'pagenagios@localhost',
     # private/resource.cfg for $USERx$ macros (from 1 to 32)
     $user = {
-        '1' => $nagios::params::plugin_dir,
+        '1' => $nagios::server::params::plugin_dir,
     },
     # Options for all nrpe-based checks
     $nrpe_options   = '-t 15',
@@ -77,31 +60,17 @@ class nagios::server (
     $notify_host_by_email_command_line    = '/usr/bin/printf "%b" "***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n" | /bin/mail -s "** $NOTIFICATIONTYPE$ Host Alert: $HOSTNAME$ is $HOSTSTATE$ **" $CONTACTEMAIL$',
     $notify_service_by_email_command_line = '/usr/bin/printf "%b" "***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$" | /bin/mail -s "** $NOTIFICATIONTYPE$ Service Alert: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **" $CONTACTEMAIL$',
     $timeperiod_workhours = '09:00-17:00',
-    $plugin_dir           = $nagios::params::plugin_dir,
+    $plugin_dir           = $nagios::server::params::plugin_dir,
     $plugin_nginx         = false,
     $plugin_xcache        = false,
     $selinux              = true
-) inherits nagios::params {
+) inherits nagios::server::params {
 
     # Full nrpe command to run, with default options
     $nrpe = "\$USER1\$/check_nrpe -H \$HOSTADDRESS\$ ${nrpe_options}"
 
     # Plugin packages required on the server side
-    package { [
-        'nagios',
-        'nagios-plugins-dhcp',
-        'nagios-plugins-dns',
-        'nagios-plugins-http',
-        'nagios-plugins-icmp',
-        'nagios-plugins-ldap',
-        'nagios-plugins-nrpe',
-        'nagios-plugins-ping',
-        'nagios-plugins-smtp',
-        'nagios-plugins-snmp',
-        'nagios-plugins-ssh',
-        'nagios-plugins-tcp',
-        'nagios-plugins-udp',
-    ]:
+    package { $nagios::server::params::server_packages:
         ensure => installed,
     }
 
@@ -154,80 +123,8 @@ class nagios::server (
 
 
     # Configure apache with apache_httpd module only if requested
-    if $apache_httpd {
-        require apache_httpd::install
-        require apache_httpd::service::ssl
-        apache_httpd { 'prefork':
-            ssl       => $apache_httpd_ssl,
-            modules   => $apache_httpd_modules,
-            keepalive => 'On',
-        }
-
-        file { '/etc/httpd/conf.d/nagios.conf':
-            owner   => 'root',
-            group   => 'root',
-            mode    => '0644',
-            content => $apache_httpd_conf_content,
-            notify  => Service['httpd'],
-            require => Package['nagios'],
-        }
-
-        if $apache_httpd_htpasswd_source != false {
-            file { '/etc/nagios/.htpasswd':
-                owner   => 'root',
-                group   => 'apache',
-                mode    => '0640',
-                source  => $apache_httpd_htpasswd_source,
-                require => Package['nagios'],
-            }
-        }
-
-        if $php {
-            include php::mod_php5
-            php::ini { '/etc/php.ini': }
-            if $php_apc { php::module { 'pecl-apc': } }
-        }
-    }
-
-    # Configure apache with puppetlabs-apache module only if requested
-    if $puppetlabs_apache {
-        #class {'apache': default_vhost => false, default_ssl_vhost => false}
-        include apache
-        include apache::mod::php
-        include apache::mod::ssl
-        apache::vhost { 'nagios':
-            port           => 443,
-            ssl            => true,
-            docroot        => $nagios::params::html_dir,
-            # Avoided scriptaliases because they will go AFTER the aliases and therefore not work
-            aliases        => [
-                { alias => '/nagios/cgi-bin/', path => $nagios::params::cgi_dir }, 
-                { alias => '/nagios/', path => $nagios::params::html_dir }
-            ],
-            directories    => [
-                { path             => $nagios::params::cgi_dir,
-                  'addhandlers'    => [{ handler => 'cgi-script', extensions => ['.cgi']}],
-                  'options'        => 'ExecCGI',
-                  'order'          => 'Deny,Allow',
-                  'deny'           => 'from all',
-                  'allow'          => "from ${apache_allowed_from}",
-                  'auth_type'      => 'Basic',
-                  'auth_user_file' => '/etc/nagios/.htpasswd',
-                  'auth_name'      => 'Nagios',
-                  'auth_require'   => 'valid-user',
-                } , {
-                  path             => $nagios::params::html_dir,
-                  'options'        => 'FollowSymlinks',
-                  'order'          => 'Deny,Allow',
-                  'deny'           => 'from all',
-                  'allow'          => "from ${apache_allowed_from}",
-                  'auth_type'      => 'Basic',
-                  'auth_user_file' => '/etc/nagios/.htpasswd',
-                  'auth_name'      => 'Nagios',
-                  'auth_require'   => 'valid-user',
-                }
-            ], # end directories
-        } # end vhost
+    if $apache_httpd or $puppetlabs_apache {
+        include nagios::server::external_apache
     }
 
 
@@ -318,17 +215,7 @@ class nagios::server (
     }
 
     # Work around a puppet bug where created files are 600 root:root
-    file { [
-        '/etc/nagios/nagios_command.cfg',
-        '/etc/nagios/nagios_contact.cfg',
-        '/etc/nagios/nagios_contactgroup.cfg',
-        '/etc/nagios/nagios_host.cfg',
-        '/etc/nagios/nagios_hostdependency.cfg',
-        '/etc/nagios/nagios_hostgroup.cfg',
-        '/etc/nagios/nagios_service.cfg',
-        '/etc/nagios/nagios_servicegroup.cfg',
-        '/etc/nagios/nagios_timeperiod.cfg',
-    ]:
+    file { $nagios::server::params::cfg_file :
         owner  => 'root',
         group  => 'nagios',
         mode   => '0640',

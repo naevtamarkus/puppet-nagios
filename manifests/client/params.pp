@@ -1,22 +1,20 @@
-# Class: nagios::params
+# Class: nagios::client::params
 #
-# Parameters for and from the nagios module.
+# Parameters for and from the nagios client part of the module.
 #
 # Parameters :
 #  none
 #
 # Sample Usage :
-#  include nagios::params
+#  include nagios::client::params
 #
-class nagios::params {
+
+class nagios::client::params {
     $libdir = $::architecture ? {
         'x86_64' => 'lib64',
         'amd64'  => 'lib64',
          default => 'lib',
     }
-    # The easy bunch
-    $nagios_service = 'nagios'
-    $nagios_user    = 'nagios'
     # nrpe
     $nrpe_service   = 'nrpe'
     $nrpe_cfg_file  = '/etc/nagios/nrpe.cfg'
@@ -28,7 +26,6 @@ class nagios::params {
             $nrpe_group         = 'nagios'
             $nrpe_pid_file      = '/run/nrpe.pid'
             $nrpe_cfg_dir       = '/etc/nagios/nrpe.d'
-            $megaclibin         = '/opt/bin/MegaCli'
         }
         'Fedora', 'Scientific': {
             $nrpe_package       = [ 'nrpe', 'nagios-plugins' ]
@@ -36,7 +33,6 @@ class nagios::params {
             $nrpe_group         = 'nrpe'
             $nrpe_pid_file      = '/var/run/nrpe.pid'
             $nrpe_cfg_dir       = '/etc/nrpe.d'
-            $megaclibin         = '/usr/sbin/MegaCli'
         }
         default: {
             $nrpe_package       = [ 'nrpe', 'nagios-plugins' ]
@@ -44,7 +40,6 @@ class nagios::params {
             $nrpe_group         = 'nrpe'
             $nrpe_pid_file      = '/var/run/nrpe.pid'
             $nrpe_cfg_dir       = '/etc/nagios/nrpe.d'
-            $megaclibin         = '/usr/sbin/MegaCli'
         }
     }
     # Optional plugin packages, to be realized by tag where needed
@@ -94,8 +89,4 @@ class nagios::params {
         }
     }
 
-    # This probably needs specialization per OS (needs the final /)
-    $cgi_dir  = "/usr/${libdir}/nagios/cgi-bin/"
-    $html_dir = "/usr/share/nagios/html/"
 }
-

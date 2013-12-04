@@ -9,7 +9,7 @@ define nagios::check::cpu (
 ) {
 
     # Service specific script
-    file { "${nagios::client::plugin_dir}/check_cpu":
+    file { "${nagios::client::params::plugin_dir}/check_cpu":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

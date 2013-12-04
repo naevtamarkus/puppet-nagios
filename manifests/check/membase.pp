@@ -22,7 +22,7 @@ define nagios::check::membase (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_membase":
+    file { "${nagios::client::params::plugin_dir}/check_membase":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

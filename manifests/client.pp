@@ -7,11 +7,11 @@ class nagios::client (
     $nagios_server               = 'default',
     # nrpe.cfg
     $nrpe_log_facility           = 'daemon',
-    $nrpe_pid_file               = $nagios::params::nrpe_pid_file,
+    $nrpe_pid_file               = $nagios::client::params::nrpe_pid_file,
     $nrpe_server_port            = '5666',
     $nrpe_server_address         = undef,
-    $nrpe_user                   = $nagios::params::nrpe_user,
-    $nrpe_group                  = $nagios::params::nrpe_group,
+    $nrpe_user                   = $nagios::client::params::nrpe_user,
+    $nrpe_group                  = $nagios::client::params::nrpe_group,
     $nrpe_allowed_hosts          = '127.0.0.1',
     $nrpe_dont_blame_nrpe        = '0',
     $nrpe_command_prefix         = undef,
@@ -35,9 +35,8 @@ class nagios::client (
     $service_notification_period = $::nagios_service_notification_period,
     $service_use                 = 'generic-service',
     # other
-    $plugin_dir                  = $nagios::params::plugin_dir,
     $selinux                     = true
-) inherits nagios::params {
+) inherits nagios::client::params {
 
     # Set the variables to be used, including scoped from elsewhere, based on the optional
     # fact or parameter from here
@@ -51,19 +50,19 @@ class nagios::client (
     }
 
     # Base package(s)
-    package { $nagios::params::nrpe_package:
+    package { $nagios::client::params::nrpe_package:
         ensure => installed,
-        alias  => $nagios::params::nrpe_package_alias,
+        alias  => $nagios::client::params::nrpe_package_alias,
     }
 
     # Most plugins use nrpe, so we install it everywhere
-    service { $nagios::params::nrpe_service:
+    service { $nagios::client::params::nrpe_service:
         ensure    => running,
         enable    => true,
         hasstatus => true,
-        subscribe => File[$nagios::params::nrpe_cfg_file],
+        subscribe => File[$nagios::client::params::nrpe_cfg_file],
     }
-    file { $nagios::params::nrpe_cfg_file:
+    file { $nagios::client::params::nrpe_cfg_file:
         owner   => 'root',
         group   => $nrpe_group,
         mode    => '0640',
@@ -71,7 +70,7 @@ class nagios::client (
         require => Package['nrpe']
     }
     # Included in the package, but we need to enable purging
-    file { $nagios::params::nrpe_cfg_dir:
+    file { $nagios::client::params::nrpe_cfg_dir:
         owner   => 'root',
         group   => $nrpe_group,
         mode    => '0750',
@@ -81,7 +80,7 @@ class nagios::client (
         require => Package['nrpe'],
     }
     # Create resource for the check_* parent resource
-    file { $nagios::client::plugin_dir:
+    file { $nagios::client::params::plugin_dir:
         ensure  => directory,
         require => Package['nrpe'],
     }

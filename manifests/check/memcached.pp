@@ -18,7 +18,7 @@ define nagios::check::memcached (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_memcached":
+    file { "${nagios::client::params::plugin_dir}/check_memcached":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

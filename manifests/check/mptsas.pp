@@ -20,7 +20,7 @@ define nagios::check::mptsas (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_mptsas":
+    file { "${nagios::client::params::plugin_dir}/check_mptsas":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

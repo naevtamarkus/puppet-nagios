@@ -2,9 +2,14 @@ define nagios::check::megaraid_sas (
     $ensure = undef,
     $args = '',
     $pkg = true,
-    $megaclibin = $::nagios::params::megaclibin
 ) {
 
+    # Binary located depending on OS
+    $megaclibin = $::operatingsystem? {
+      'Gentoo'     => '/opt/bin/MegaCli',
+      default      => '/usr/sbin/MegaCli',
+    }
+    
     # Generic overrides
     if $::nagios_check_megaraid_sas_check_period != '' {
         Nagios_service { check_period => $::nagios_check_megaraid_sas_check_period }
@@ -20,7 +25,7 @@ define nagios::check::megaraid_sas (
         $fullargs = $args
     }
 
-    file { "${nagios::client::plugin_dir}/check_megaraid_sas":
+    file { "${nagios::client::params::plugin_dir}/check_megaraid_sas":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

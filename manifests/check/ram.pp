@@ -20,7 +20,7 @@ define nagios::check::ram ( $args = '' ) {
         $critical = '5%'
     }
 
-    file { "${nagios::client::plugin_dir}/check_ram":
+    file { "${nagios::client::params::plugin_dir}/check_ram":
         owner   => 'root',
         group   => 'root',
         mode    => '0755',

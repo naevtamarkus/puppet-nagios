@@ -20,7 +20,7 @@
 # 02110-1301, USA.
 
 use strict;
-use lib qw(<%= scope.lookupvar('nagios::client::plugin_dir') %>);
+use lib qw(<%= scope.lookupvar('nagios::client::params::plugin_dir') %>);
 use utils qw(%ERRORS);
 
 my $lsiutil = '<%= @lsiutilbin %>';
