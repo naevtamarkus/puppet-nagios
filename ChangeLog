@@ -3,6 +3,11 @@
 * Update check::load to become a class.
 * Add new check::load default values for over 16 CPUs.
 
+2013-12-04 - 0.5.1 (Pablo Fernandez)
+* Split between client and server
+* Intensive use of params class for both
+* Cleanup 
+
 2013-11-25 - 0.5.0 (Pablo Fernandez)
 * Implemented remote checks (to be created from other modules) in check.pp
 * Added support for Scientific Linux 6
